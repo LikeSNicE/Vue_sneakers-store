@@ -56,7 +56,7 @@ provide('cart', {
 })
 
 /* Корзина (END)*/
-
+/*Git test branch */
 
 </script>
 
