@@ -1,12 +1,9 @@
 <script setup>
 import { ref, watch, provide, computed } from 'vue'
-import { RouterLink,RouterView } from 'vue-router';
 
 import Header from './components/Header.vue'
 
 import Drawer from './components/Drawer.vue'
-
-import Home from './pages/Home.vue'
 
 
 /* Корзина (START) */
