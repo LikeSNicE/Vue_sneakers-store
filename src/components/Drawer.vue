@@ -7,7 +7,7 @@ import DrawerHead from './DrawerHead.vue'
 import CartItemList from './CartItemList.vue'
 import InfoBlock from './infoBlock.vue'
 import { getUserIdFromToken } from '@/services/api'
-
+import BaseButton from './BaseButton.vue'
 
 const emit = defineEmits(['createOrder'])
 
@@ -22,21 +22,20 @@ const isCreating = ref(false)
 const orderId = ref(null)
 const totalOrderPrice = ref(null)
 
-
 const createOrder = async () => {
   try {
     isCreating.value = true
-    const token = localStorage.getItem('token');
-    const userId = getUserIdFromToken(token);
+    const token = localStorage.getItem('token')
+    const userId = getUserIdFromToken(token)
 
-    if(!userId){
+    if (!userId) {
       throw new Error('Пользователь не найден')
     }
 
     const { data } = await axios.post(`${base_url}/orders`, {
       items: cart.value,
       totalPrice: props.totalPrice,
-      userId
+      userId,
     })
 
     cart.value = []
@@ -58,7 +57,11 @@ const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value)
 
 <template>
   <div class="fixed top-0 left-0 h-full w-full bg-black z-10 opacity-70"></div>
-  <div class="bg-white w-96 h-full top-0 right-0 fixed z-20 p-8 overflow-y-auto">
+  <div 
+  class="bg-white w-96 h-full top-0 right-0 fixed z-20 p-8 "
+  :class="{
+    'overflow-y-auto': !cartIsEmpty
+  }">
     <DrawerHead />
 
     <div v-if="!totalPrice || orderId" class="flex h-full items-center">
@@ -92,13 +95,13 @@ const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value)
           <b>{{ vatPrice }} Р</b>
         </div>
 
-        <button
-          :disabled="buttonDisabled"
+        <BaseButton
           @click="createOrder"
-          class="bg-lime-500 w-full rounded-xl py-3 text-white font-semibold hover:bg-lime-600 transition active:bg-lime-700 disabled:bg-slate-400 cursor-pointer mt-7"
-        >
-          Оформить заказ
-        </button>
+          label="Оформить Заказ"
+          :disabled="buttonDisabled"
+          full-width
+          margin="mt-7"
+        />
       </div>
     </div>
   </div>

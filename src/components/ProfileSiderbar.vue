@@ -82,7 +82,7 @@ const handleLogout = () => {
           opacity-70
           text-stone-50"
         >
-          Настройка профиля
+          Настройки профиля
         </router-link>
       </li>
 

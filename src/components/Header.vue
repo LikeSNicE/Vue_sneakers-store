@@ -29,7 +29,7 @@ const emit = defineEmits(['openDrawer'])
         class="flex items-center gap-3 text-slate-500 cursor-pointer hover:text-black"
       >
         <img src="/cart.svg" alt="cart" />
-        <b>{{ totalPrice }} руб.</b>
+        <b>{{ totalPrice }} тенге</b>
       </li>
 
       <router-link to="/favorites">
