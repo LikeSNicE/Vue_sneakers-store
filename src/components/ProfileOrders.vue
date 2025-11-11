@@ -5,6 +5,10 @@ import CardList from '@/components/CardList.vue'
 import { base_url } from '@/services/api'
 import { getUserIdFromToken } from '@/services/api'
 import { useLoadingStore } from '@/stores/loadingStore'
+import ProfileOrdersSkeleton from '@/components/ProfileOrdersSkeleton.vue'
+import NoOrders from '@/components/NoOrders.vue'
+import CardWideList from './CardWideList.vue'
+import TitleBaseSlot from './TitleBaseSlot.vue'
 
 const loadingStore = useLoadingStore()
 const userOrders = ref([])
@@ -39,19 +43,28 @@ onMounted(fetchOrders)
 
 <template>
   <div>
-    <h3 class="text-3xl mb-4">Ваши заказы :</h3>
-    <div class="font-bold text-2xl" v-if="userOrders.length === 0">
-      К сожалению вы не сделали еще заказы
+    <!-- <h5 class="font-bold text-2xl mb-4">Личные заказы</h5> -->
+    <TitleBaseSlot>Личные заказы</TitleBaseSlot>
+
+    <ProfileOrdersSkeleton v-if="loadingStore.isLoading" />
+
+    <div v-else-if="userOrders.length === 0">
+      <NoOrders />
     </div>
 
-    <div v-for="order in userOrders" :key="order.id" class="mb-8">
-      <div class="flex mb-4">
-        <h1 class="text-xl">ID заказа: {{ order.id }}</h1>
-        <h2 class="ml-auto">
-          Общая сумма заказа <b>{{ order.totalPrice }} </b> тенге.
-        </h2>
-      </div>
-      <CardList :items="order.items" isFavorites />
+    <div
+      v-else-if="!loadingStore.isLoading"
+      v-for="order in userOrders"
+      :key="order.id"
+      class="border-2 rounded-2xl my-4"
+    >
+      <h4 class="text-xl border-b-2 py-2 px-4">Заказ: {{ order.id }}</h4>
+
+      <CardWideList :items="order.items" />
+
+      <p class="text-right border-t-2 py-2 px-4">
+        Итого <b>{{ order.totalPrice }} </b> тенге.
+      </p>
     </div>
   </div>
 </template>

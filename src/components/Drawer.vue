@@ -1,7 +1,7 @@
 <script setup>
 import axios from 'axios'
-import { ref, computed, inject } from 'vue'
-import { base_url } from '@/services/api'
+import { ref, computed } from 'vue'
+import { api, base_url } from '@/services/api'
 
 import DrawerHead from './DrawerHead.vue'
 import CartItemList from './CartItemList.vue'
@@ -9,6 +9,8 @@ import InfoBlock from './infoBlock.vue'
 import { getUserIdFromToken } from '@/services/api'
 import BaseButton from './BaseButton.vue'
 import { useLoadingStore } from '@/stores/loadingStore'
+import { useCartStore } from '@/stores/CartStore'
+import { useGoodsStore } from '@/stores/Goods'
 
 const emit = defineEmits(['createOrder'])
 
@@ -18,7 +20,8 @@ const props = defineProps({
 })
 
 const loadingStore = useLoadingStore()
-const { cart } = inject('cart')
+const cartStore = useCartStore()
+const goodsStore = useGoodsStore()
 
 const isCreating = ref(false)
 const orderId = ref(null)
@@ -36,14 +39,28 @@ const createOrder = async () => {
     }
 
     const { data } = await axios.post(`${base_url}/orders`, {
-      items: cart.value,
+      items: cartStore.cart,
       totalPrice: props.totalPrice,
       userId,
     })
 
-    cart.value = []
-
     console.log(data)
+
+    // локально обновляем UI сразу
+    cartStore.cart.forEach((cartItem) => {
+      const item = goodsStore.goods.find((g) => g.id === cartItem.id)
+
+      if (item) item.isAdded = false
+    })
+
+    // на сервер отправляем PATCH для каждого товара
+    const promises = cartStore.cart.map(
+      async (item) => await api.patch(`/items/${item.id}`, { isAdded: false }),
+    )
+    await Promise.all(promises) // выполняем все параллельно
+
+    cartStore.cart = []
+
     // return data
     orderId.value = data.id
     totalOrderPrice.value = data.totalPrice
@@ -55,7 +72,7 @@ const createOrder = async () => {
   }
 }
 
-const cartIsEmpty = computed(() => cart.value.length === 0)
+const cartIsEmpty = computed(() => cartStore.cart.length === 0)
 const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value)
 </script>
 

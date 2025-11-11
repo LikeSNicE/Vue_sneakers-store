@@ -1,25 +1,71 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/pages/Home.vue'
+import HomePage from '@/pages/HomePage.vue'
 import Favorites from '@/pages/Favorites.vue'
-import Auth from '@/pages/Auth.vue'
-import Register from '@/pages/Register.vue'
-import Profile from '@/pages/Profile.vue'
-import ProfileOrders from '@/pages/ProfileOrders.vue'
-import ProfileHome from '@/pages/ProfileHome.vue'
-import ProfileSettings from '@/pages/ProfileSettings.vue'
+import AuthPage from '@/pages/AuthPage.vue'
+import RegisterPage from '@/pages/RegisterPage.vue'
+import Profile from '@/layouts/ProfileLayout.vue'
+
+import ProfileHome from '@/components/ProfileHome.vue'
+import ProfileSettings from '@/components/ProfileSettings.vue'
+import AuthLayout from '@/layouts/AuthLayout.vue'
+import HomeLayout from '@/layouts/HomeLayout.vue'
+import ProfileLayout from '@/layouts/ProfileLayout.vue'
+import ProfileOrders from '@/components/ProfileOrders.vue'
+import Test from '@/components/Test.vue'
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/favorites', name: 'Favorites', component: Favorites },
-  { path: '/auth', name: 'Auth', component: Auth },
-  { path: '/register', name: 'Register', component: Register },
   {
-    path: '/profile',
-    component: Profile,
+    path: '/',
+    component: HomeLayout,
     children: [
-      { path: '', component: ProfileHome },
-      { path: 'orders', name: 'ProfileOrders', component: ProfileOrders },
-      { path: 'settings', name: 'Profile Settings', component: ProfileSettings },
+      {
+        path: '',
+        component: HomePage,
+      },
+      {
+        path: 'favorites',
+        name: 'Favorites',
+        component: Favorites,
+      },
+      {
+        path: 'profile',
+        component: ProfileLayout,
+        children: [
+          {
+            path: 'settings',
+            name: 'ProfileSettings',
+            component: ProfileSettings,
+            meta: {
+              title: 'Настройки профиля',
+            },
+          },
+          {
+            path: 'orders',
+            name: 'orders',
+            component: ProfileOrders,
+            meta: {
+              title: 'Заказы',
+            },
+          },
+        ],
+      },
+      {
+        path: 'test',
+        name: 'test',
+        component: Test,
+      },
+    ],
+  },
+  {
+    path: '/auth',
+    component: AuthLayout,
+    children: [
+      {
+        path: 'login',
+        name: 'login',
+        component: AuthPage,
+      },
+      { path: 'register', name: 'register', component: RegisterPage },
     ],
   },
 ]

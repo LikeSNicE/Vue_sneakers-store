@@ -1,29 +1,38 @@
+import { api } from '@/services/api'
 import { defineStore } from 'pinia'
-import { ref, watch, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useCartStore = defineStore('cart', () => {
   const cart = ref([])
 
   const totalPrice = computed(() => cart.value.reduce((acc, item) => acc + item.price, 0))
+
   const vatPrice = computed(() => Math.round((totalPrice.value * 12) / 100))
 
-  const addToCart = (item) => {
-    cart.value.push(item)
-    item.isAdded = true
+  const addToCart = async (item) => {
+    try {
+      item.isAdded = true
+      await api.patch(`/items/${item.id}`, {
+        isAdded: true,
+      })
+      cart.value.push(item)
+    } catch (error) {
+      console.log(error.message)
+    }
   }
 
-  const removeFromCart = (item) => {
-    cart.value.splice(cart.value.indexOf(item), 1)
-    item.isAdded = false
+  const removeFromCart = async (item) => {
+    try {
+      item.isAdded = false
+      await api.patch(`/items/${item.id}`, { isAdded: false })
+      const index = cart.value.findIndex((cartItem) => cartItem.id === item.id)
+      if (index !== -1) {
+        cart.value.splice(index, 1)
+      }
+    } catch (error) {
+      console.error('Ошибка при удалении из корзины:', error)
+    }
   }
-
-  watch(
-    cart,
-    () => {
-      localStorage.setItem('cart', JSON.stringify(cart.value))
-    },
-    { deep: true },
-  )
 
   return {
     cart,

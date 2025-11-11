@@ -9,10 +9,9 @@ const login = (token) => {
   authState.isAuthenticated = true
 }
 
-const logout = (router) => {
+const logout = () => {
   localStorage.removeItem('token')
   authState.isAuthenticated = false
-  router.push('/auth')
 }
 
 export { authState, login, logout }

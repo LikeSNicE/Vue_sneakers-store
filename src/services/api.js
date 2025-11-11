@@ -2,6 +2,12 @@ import axios from 'axios'
 import { useLoadingStore } from '@/stores/loadingStore'
 const base_url = 'https://647af5741cbcb2a0.mokky.dev'
 
+// apiInstance
+
+const api = axios.create({
+  baseURL: base_url,
+})
+
 //getToken
 const getUserIdFromToken = (token) => {
   if (!token) {
@@ -44,4 +50,4 @@ const fetchUser = async (userData) => {
   userData.value = { ...userData.value, ...data }
 }
 
-export { base_url, getUserIdFromToken, getUserData, fetchUser }
+export { api, base_url, getUserIdFromToken, getUserData, fetchUser }

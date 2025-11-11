@@ -38,7 +38,7 @@ const loadFile = (event) => {
 </script>
 
 <template>
-  <div class="size-[150px]">
+  <!-- <div class="size-[150px]">
     <img
       class="rounded-[50%] border overflow-hidden object-cover"
       :style="{
@@ -53,5 +53,5 @@ const loadFile = (event) => {
       Изменить фото
       <input type="file" @change="loadFile" accept="image/*" class="hidden" />
     </label>
-  </div>
+  </div> -->
 </template>
