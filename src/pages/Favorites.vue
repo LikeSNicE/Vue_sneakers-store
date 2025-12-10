@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 
 import CardList from '../components/CardList.vue'
@@ -11,6 +11,9 @@ import { useGoBack } from '@/utils/useGoBack.vue'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
 import { useCartStore } from '@/stores/CartStore'
 import { useGoodsStore } from '@/stores/Goods'
+import { getErrorMessage } from '@/utils/errors'
+import { type FavoritesSneakers } from '@/types/Favorites'
+import { type Sneakers } from '@/types/sneakers'
 
 const loadingStore = useLoadingStore()
 const goodsStore = useGoodsStore()
@@ -18,17 +21,18 @@ const { goBack } = useGoBack()
 
 const cartStore = useCartStore()
 
-const favorites = ref([])
+const favorites = ref<Sneakers[]>([])
 
 onMounted(async () => {
   try {
     loadingStore.startLoading()
     const { data } = await api.get(`/favorites?_relations=items`)
-    favorites.value = data.map((obj) => obj.item)
-    console.log(data) // id: 1, item: карточка товара
-    console.log(data.map((obj) => obj.item))
-  } catch (error) {
-    console.log(error.message)
+    favorites.value = data.map((obj: FavoritesSneakers) => obj.item)
+    console.log('data from favorites: ', data) // id: 1, item: карточка товара
+    console.log('favorites: ', favorites.value)
+  } catch (error: unknown) {
+    const errorMessage = getErrorMessage(error)
+    console.log(errorMessage)
   } finally {
     loadingStore.stopLoading()
   }

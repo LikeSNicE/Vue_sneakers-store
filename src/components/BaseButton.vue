@@ -9,7 +9,7 @@ const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
 
-const handleClick = (event: MouseEvent) => emit('click', event)
+const handleClick = (event: MouseEvent): void => emit('click', event)
 </script>
 
 <template>
