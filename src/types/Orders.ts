@@ -1,4 +1,4 @@
-import { type Sneakers } from './sneakers'
+import { type Sneakers } from './Sneakers'
 
 export interface SneakersOrders {
   id: number
@@ -6,6 +6,8 @@ export interface SneakersOrders {
   totalPrice: number
   userId: number
 }
+
+export type BaseOrder = Pick<SneakersOrders, 'id' | 'items' | 'totalPrice'>
 
 export interface SneakersOrdersParams {
   userId: number

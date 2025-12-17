@@ -8,12 +8,12 @@ import ProfileOrdersSkeleton from '@/components/ProfileOrdersSkeleton.vue'
 import NoOrders from '@/components/NoOrders.vue'
 import CardWideList from './CardWideList.vue'
 import TitleBaseSlot from './TitleBaseSlot.vue'
-import { type SneakersOrders, type SneakersOrdersParams } from '@/types/Orders'
+import { type SneakersOrdersParams, type BaseOrder } from '@/types/Orders'
 
 const loadingStore = useLoadingStore()
-const userOrders = ref<SneakersOrders[] | null>(null)
+const userOrders = ref<BaseOrder[] | null>(null)
 
-// Создаем computed свойство для сортировки заказов
+//  computed свойство для сортировки заказов
 const sortedOrders = computed(() => {
   if (!userOrders.value) {
     return []

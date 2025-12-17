@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import CardWide from './CardWide.vue'
-import { type Sneakers } from '@/types/sneakers'
+import { type SneakersCardWide } from '@/types/Sneakers'
 
 defineProps<{
-  items: Sneakers[]
+  items: SneakersCardWide[]
 }>()
 </script>
 

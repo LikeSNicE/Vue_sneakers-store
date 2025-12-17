@@ -8,8 +8,8 @@ import InfoBlock from './infoBlock.vue'
 import BaseButton from './BaseButton.vue'
 
 import { useLoadingStore } from '@/stores/loadingStore'
-import { useCartStore } from '@/stores/CartStore'
-import { useGoodsStore } from '@/stores/Goods'
+import { useCartStore } from '@/stores/cartStore'
+import { useGoodsStore } from '@/stores/goodsStore'
 const emit = defineEmits(['createOrder'])
 
 const props = defineProps({

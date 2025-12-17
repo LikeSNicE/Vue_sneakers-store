@@ -1,13 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { watch, onMounted } from 'vue'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 import CardList from '../components/CardList.vue'
 import { useLoadingStore } from '@/stores/loadingStore'
 import CardListSkeleton from '@/components/CardListSkeleton.vue'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
-import { useCartStore } from '@/stores/CartStore'
-import { useFilterStore } from '@/stores/FiltersStore'
-import { useGoodsStore } from '@/stores/Goods'
+import { useCartStore } from '@/stores/cartStore'
+import { useFilterStore } from '@/stores/filtersStore'
+import { useGoodsStore } from '@/stores/goodsStore'
 
 const cartStore = useCartStore()
 
@@ -15,12 +15,12 @@ const loadingStore = useLoadingStore()
 const filterStore = useFilterStore()
 const goodsStore = useGoodsStore()
 
-const onChangeSelect = (event) => {
-  filterStore.filters.sortBy = event.target.value
+const onChangeSelect = (event: Event) => {
+  filterStore.filters.sortBy = (event.target as HTMLInputElement).value
 }
 
-const onChangeSearchInput = debounce((event) => {
-  filterStore.filters.searchQuery = event.target.value
+const onChangeSearchInput = debounce((event: Event) => {
+  filterStore.filters.searchQuery = (event.target as HTMLInputElement).value
 }, 300)
 
 onMounted(async () => {

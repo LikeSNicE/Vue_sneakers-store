@@ -1,4 +1,3 @@
-<script lang="ts">
 import { useRouter } from 'vue-router'
 
 const useGoBack = () => {
@@ -14,4 +13,3 @@ const useGoBack = () => {
 }
 
 export { useGoBack }
-</script>

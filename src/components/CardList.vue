@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Card from './Card.vue'
-import { type Sneakers } from '@/types/sneakers'
+import { type SneakersCard } from '@/types/Sneakers'
 
 defineProps<{
-  items: Sneakers[]
+  items: SneakersCard[]
   isFavorites: boolean
 }>()
 

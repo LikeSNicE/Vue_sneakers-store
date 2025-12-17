@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { authState } from '../services/auth'
-import { useDrawerStore } from '../stores/DrawerStore'
+import { useDrawerStore } from '../stores/drawerStore'
 import Logo from './Logo.vue'
 
 defineProps({

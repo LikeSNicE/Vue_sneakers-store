@@ -1,7 +1,7 @@
 import { api } from '@/services/api'
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { type Sneakers } from '@/types/sneakers'
+import { type Sneakers } from '@/types/Sneakers'
 import { getErrorMessage } from '@/utils/errors'
 
 export const useCartStore = defineStore('cart', () => {

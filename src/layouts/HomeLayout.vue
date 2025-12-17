@@ -2,8 +2,8 @@
 import { watch } from 'vue'
 import Header from '@/components/Header.vue'
 import Drawer from '@/components/Drawer.vue'
-import { useDrawerStore } from '@/stores/DrawerStore'
-import { useCartStore } from '@/stores/CartStore'
+import { useDrawerStore } from '@/stores/drawerStore'
+import { useCartStore } from '@/stores/cartStore'
 import Logo from '@/components/Logo.vue'
 
 const drawerStore = useDrawerStore()

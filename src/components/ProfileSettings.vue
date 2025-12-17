@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router'
 import { useLoadingStore } from '@/stores/loadingStore'
 import { type User } from '@/types/Users'
 import { getErrorMessage } from '@/utils/errors'
+import BaseInput from './BaseInput.vue'
 
 // Используем ref для одного объекта пользователя, инициализируя его базовой структурой.
 // Это предотвратит ошибки в шаблоне до загрузки данных.
@@ -71,28 +72,10 @@ onMounted(async () => {
   <div>
     <!-- Используем v-if чтобы форма не отображалась до загрузки данных -->
     <div v-if="userData && userData.id" class="grid grid-cols-2 gap-4">
-      <div>
-        <label for="userName" class="block mb-2">Имя</label>
-        <input
-          id="userName"
-          v-model="userData.userName"
-          type="text"
-          class="border focus:outline-none focus:ring-2 focus:ring-lime-600 p-2 w-full rounded-xl"
-        />
-      </div>
-
-      <div>
-        <label for="userEmail" class="block mb-2">Email</label>
-        <input
-          id="userEmail"
-          v-model="userData.email"
-          type="email"
-          class="border focus:outline-none focus:ring-2 focus:ring-lime-600 p-2 w-full rounded-xl"
-          required
-        />
-      </div>
+      <BaseInput label="Имя" v-model="userData.userName" />
+      <BaseInput label="email" v-model="userData.email" />
     </div>
-    <!-- Можно добавить скелетон или лоадер, пока userData грузится -->
+
     <div v-else>
       <p>Загрузка данных пользователя...</p>
     </div>

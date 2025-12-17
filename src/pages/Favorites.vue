@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 
 import CardList from '../components/CardList.vue'
@@ -7,10 +7,13 @@ import { useLoadingStore } from '@/stores/loadingStore'
 import CardListSkeleton from '@/components/CardListSkeleton.vue'
 import NoFavoritesCard from '@/components/NoFavoritesCard.vue'
 import ButtonNavigation from '@/components/ButtonNavigation.vue'
-import { useGoBack } from '@/utils/useGoBack.vue'
+import { useGoBack } from '@/utils/useGoBack'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
-import { useCartStore } from '@/stores/CartStore'
-import { useGoodsStore } from '@/stores/Goods'
+import { useCartStore } from '@/stores/cartStore'
+import { useGoodsStore } from '@/stores/goodsStore'
+import { getErrorMessage } from '@/utils/errors'
+import { type FavoritesSneakers } from '@/types/Favorites'
+import { type Sneakers } from '@/types/Sneakers'
 
 const loadingStore = useLoadingStore()
 const goodsStore = useGoodsStore()
@@ -18,17 +21,18 @@ const { goBack } = useGoBack()
 
 const cartStore = useCartStore()
 
-const favorites = ref([])
+const favorites = ref<Sneakers[]>([])
 
 onMounted(async () => {
   try {
     loadingStore.startLoading()
     const { data } = await api.get(`/favorites?_relations=items`)
-    favorites.value = data.map((obj) => obj.item)
-    console.log(data) // id: 1, item: карточка товара
-    console.log(data.map((obj) => obj.item))
-  } catch (error) {
-    console.log(error.message)
+    favorites.value = data.map((obj: FavoritesSneakers) => obj.item)
+    console.log('data from favorites: ', data) // id: 1, item: карточка товара
+    console.log('favorites: ', favorites.value)
+  } catch (error: unknown) {
+    const errorMessage = getErrorMessage(error)
+    console.log(errorMessage)
   } finally {
     loadingStore.stopLoading()
   }

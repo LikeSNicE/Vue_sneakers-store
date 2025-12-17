@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useLoadingStore } from './loadingStore'
-import { useCartStore } from './CartStore'
-import { useFilterStore } from './FiltersStore'
+import { useCartStore } from './cartStore'
+import { useFilterStore } from './filtersStore'
 import { api } from '@/services/api'
-import { type Sneakers, type IItemsParams } from '@/types/sneakers'
+import { type Sneakers, type IItemsParams } from '@/types/Sneakers'
 import { getErrorMessage } from '@/utils/errors'
 
 export const useGoodsStore = defineStore('goods', () => {

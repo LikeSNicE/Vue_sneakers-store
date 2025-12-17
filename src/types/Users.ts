@@ -4,3 +4,7 @@ export interface User {
   userName: string
   password?: string
 }
+
+export type AuthCredentials = Pick<User, 'email' | 'password'>
+
+export type RegisterCredentials = Omit<User, 'id'>

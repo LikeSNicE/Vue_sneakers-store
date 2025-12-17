@@ -1,31 +1,39 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '@/services/api'
 import BaseButton from '@/components/BaseButton.vue'
 
 import AuthSlot from '@/components/AuthSlot.vue'
+import { getErrorMessage } from '@/utils/errors'
+import BaseInput from '@/components/BaseInput.vue'
+import { type RegisterCredentials } from '@/types/Users'
 
 const email = ref('')
 const password = ref('')
 const userName = ref('')
 const router = useRouter()
 
-const registerUser = async () => {
+const registerUser = async (): Promise<void> => {
   try {
-    const response = await api.post(`/register`, {
+    const registerFields: RegisterCredentials = {
       email: email.value,
       userName: userName.value,
       password: password.value,
-    })
-    localStorage.setItem('token', response.data.token)
-    router.push('/auth/login')
-  } catch (error) {
-    if (error.response) {
-      console.error('Ошибка регистрации:', error.response.data)
-    } else {
-      console.error('Ошибка подключения:', error)
     }
+
+    const response = await api.post(`/register`, registerFields as RegisterCredentials)
+
+    if (response.status === 200 || response.status === 201) {
+      const { token } = response.data
+      localStorage.setItem('token', token)
+      await router.push('/auth/login')
+    } else {
+      console.log(`Ошибка регистрации. ${response.statusText}`)
+    }
+  } catch (error: unknown) {
+    const errorMessage = getErrorMessage(error)
+    console.log(errorMessage)
   }
 }
 </script>
@@ -35,41 +43,11 @@ const registerUser = async () => {
     <template #title-form> Регистрация </template>
     <template #form>
       <form class="flex flex-col gap-2" @submit.prevent="registerUser">
-        <div class="flex flex-col gap-1">
-          <label for="username" class="block text-sm font-medium text-gray-700">Имя</label>
-          <input
-            id="username"
-            v-model="userName"
-            placeholder="Введите ваше имя"
-            type="text"
-            required
-            class="block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition sm:text-sm"
-          />
-        </div>
+        <BaseInput label="Имя пользователя" placeholder="Введите ваше имя" v-model="userName" />
 
-        <div class="flex flex-col gap-1">
-          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-          <input
-            id="email"
-            v-model="email"
-            placeholder="user@example.com"
-            type="email"
-            required
-            class="block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition sm:text-sm"
-          />
-        </div>
+        <BaseInput label="Email" placeholder="user@example.com" type="email" v-model="email" />
 
-        <div class="flex flex-col gap-1">
-          <label for="password" class="block text-sm font-medium text-gray-700">Пароль</label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            required
-            placeholder="********"
-            class="block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition sm:text-sm"
-          />
-        </div>
+        <BaseInput label="Пароль" placeholder="********" v-model="password" type="password" />
 
         <BaseButton type="submit" label="Создать аккаунт" class="mt-3" />
       </form>
