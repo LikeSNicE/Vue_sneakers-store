@@ -7,13 +7,13 @@ import { useLoadingStore } from '@/stores/loadingStore'
 import CardListSkeleton from '@/components/CardListSkeleton.vue'
 import NoFavoritesCard from '@/components/NoFavoritesCard.vue'
 import ButtonNavigation from '@/components/ButtonNavigation.vue'
-import { useGoBack } from '@/utils/useGoBack.vue'
+import { useGoBack } from '@/utils/useGoBack'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
 import { useCartStore } from '@/stores/cartStore'
 import { useGoodsStore } from '@/stores/goodsStore'
 import { getErrorMessage } from '@/utils/errors'
 import { type FavoritesSneakers } from '@/types/Favorites'
-import { type Sneakers } from '@/types/sneakers'
+import { type Sneakers } from '@/types/Sneakers'
 
 const loadingStore = useLoadingStore()
 const goodsStore = useGoodsStore()

@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
 import ButtonNavigation from '@/components/ButtonNavigation.vue'
-import { useGoBack } from '@/utils/useGoBack.vue'
+import { useGoBack } from '@/utils/useGoBack'
 
 const route = useRoute()
 const { goBack } = useGoBack()
