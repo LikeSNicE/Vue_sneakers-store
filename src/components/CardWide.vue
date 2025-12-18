@@ -4,6 +4,8 @@ defineProps<{
   title: string
   price: number
 }>()
+
+import { BASE_URL } from '@/config/baseUrl'
 </script>
 
 <template>
@@ -11,7 +13,7 @@ defineProps<{
     class="w-full flex justify-between items-center p-4 border border-slate-100 cursor-pointer min-w-0 gap-2 max-[768px]:flex-col"
   >
     <div class="flex items-center gap-4 min-w-0">
-      <img class="w-[110px]" :src="imageUrl" alt="sneaker" />
+      <img class="w-[110px]" :src="`${BASE_URL}${imageUrl.replace(/^\//, '')}`" alt="sneaker" />
       <h6 class="min-w-0 truncate">{{ title }}</h6>
     </div>
     <div
