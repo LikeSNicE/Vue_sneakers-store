@@ -1,20 +1,22 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useLoadingStore } from './loadingStore'
-import { useCartStore } from './cartStore'
+import { useCartStore } from './CartStore'
 import { useFilterStore } from './filtersStore'
 import { api } from '@/services/api'
 import { type Sneakers, type IItemsParams } from '@/types/Sneakers'
 import { getErrorMessage } from '@/utils/errors'
+import { type CartItem } from '@/types/Cart'
 
 export const useGoodsStore = defineStore('goods', () => {
-  const goods = ref<Sneakers[]>([])
-
   const loadingStore = useLoadingStore()
   const cartStore = useCartStore()
   const filterStore = useFilterStore()
 
-  const onClickAddPlus = (item: Sneakers) => {
+  const goods = ref<CartItem[]>([])
+  const currentSneaker = ref<CartItem | null>(null)
+
+  const onClickAddPlus = (item: CartItem) => {
     if (!item.isAdded) {
       cartStore.addToCart(item)
     } else {
@@ -40,7 +42,6 @@ export const useGoodsStore = defineStore('goods', () => {
           favoriteId: data.id,
         })
       } else {
-        // 1️⃣ Оптимистично обновляем UI
         item.isFavorite = false
 
         await api.delete(`/favorites/${item.favoriteId}`)
@@ -50,7 +51,6 @@ export const useGoodsStore = defineStore('goods', () => {
           favoriteId: null,
         })
 
-        // 4️⃣ Локально очищаем favoriteId
         item.favoriteId = null
       }
     } catch (error: unknown) {
@@ -93,11 +93,37 @@ export const useGoodsStore = defineStore('goods', () => {
     }
   }
 
+  const fetchSneaker = async (id: number): Promise<void> => {
+    if (!id || isNaN(id)) {
+      console.error('Некоррктенный ID', id)
+      currentSneaker.value = null
+      return
+    }
+
+    try {
+      const { data } = await api.get(`/items/${id}`)
+
+      if (!data || typeof data !== 'object') {
+        console.warn('Кроссовок не найден')
+        currentSneaker.value = null
+        return
+      }
+
+      currentSneaker.value = data
+      console.log(currentSneaker.value)
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error)
+      console.log(errorMessage)
+    }
+  }
+
   return {
     goods,
+    currentSneaker,
     fetchItems,
     fetchFavorites,
     addToFavorite,
     onClickAddPlus,
+    fetchSneaker,
   }
 })

@@ -8,14 +8,16 @@ import InfoBlock from './infoBlock.vue'
 import BaseButton from './BaseButton.vue'
 
 import { useLoadingStore } from '@/stores/loadingStore'
-import { useCartStore } from '@/stores/cartStore'
+import { useCartStore } from '@/stores/CartStore'
 import { useGoodsStore } from '@/stores/goodsStore'
+import { getErrorMessage } from '@/utils/errors'
+import { type CartItem } from '@/types/Cart'
 const emit = defineEmits(['createOrder'])
 
-const props = defineProps({
-  totalPrice: Number,
-  vatPrice: Number,
-})
+const props = defineProps<{
+  totalPrice: number
+  vatPrice: number
+}>()
 
 const loadingStore = useLoadingStore()
 const cartStore = useCartStore()
@@ -25,9 +27,9 @@ const isCreating = ref(false)
 const orderId = ref(null)
 const totalOrderPrice = ref(null)
 
-const createOrder = async () => {
-  console.log('сreate order')
+const createOrder = async (): Promise<void> => {
   loadingStore.startLoading()
+
   try {
     isCreating.value = true
     const token = localStorage.getItem('token')
@@ -46,7 +48,7 @@ const createOrder = async () => {
     console.log(data)
 
     // локально обновляем UI сразу
-    cartStore.cart.forEach((cartItem) => {
+    cartStore.cart.forEach((cartItem: CartItem) => {
       const item = goodsStore.goods.find((g) => g.id === cartItem.id)
 
       if (item) item.isAdded = false
@@ -54,7 +56,7 @@ const createOrder = async () => {
 
     // на сервер отправляем PATCH для каждого товара
     const promises = cartStore.cart.map(
-      async (item) => await api.patch(`/items/${item.id}`, { isAdded: false }),
+      async (item: CartItem) => await api.patch(`/items/${item.id}`, { isAdded: false }),
     )
     await Promise.all(promises) // выполняем все параллельно
 
@@ -63,8 +65,9 @@ const createOrder = async () => {
     // return data
     orderId.value = data.id
     totalOrderPrice.value = data.totalPrice
-  } catch (error) {
-    console.log(error)
+  } catch (error: unknown) {
+    const errorMessage = getErrorMessage(error)
+    console.log(errorMessage)
   } finally {
     isCreating.value = false
     loadingStore.stopLoading()
@@ -103,6 +106,9 @@ const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value)
       </div>
 
       <div v-else>
+        <button @click="cartStore.clearCart()" class="bg-gray-200 py-2 px-4 rounded-lg mb-2">
+          Очистить корзину
+        </button>
         <CartItemList />
         <div class="flex flex-col gap-4 mt-7">
           <div class="flex gap-2">
@@ -112,7 +118,7 @@ const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value)
           </div>
 
           <div class="flex gap-2">
-            <span>НДС: 12%</span>
+            <span>НДС: 16%</span>
             <div class="flex-1 border-b border-dashed"></div>
             <b>{{ vatPrice }} Тенге</b>
           </div>

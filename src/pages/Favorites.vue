@@ -9,11 +9,11 @@ import NoFavoritesCard from '@/components/NoFavoritesCard.vue'
 import ButtonNavigation from '@/components/ButtonNavigation.vue'
 import { useGoBack } from '@/utils/useGoBack'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
-import { useCartStore } from '@/stores/cartStore'
+import { useCartStore } from '@/stores/CartStore'
 import { useGoodsStore } from '@/stores/goodsStore'
 import { getErrorMessage } from '@/utils/errors'
 import { type FavoritesSneakers } from '@/types/Favorites'
-import { type Sneakers } from '@/types/Sneakers'
+import { type CartItem } from '@/types/Cart'
 
 const loadingStore = useLoadingStore()
 const goodsStore = useGoodsStore()
@@ -21,7 +21,7 @@ const { goBack } = useGoBack()
 
 const cartStore = useCartStore()
 
-const favorites = ref<Sneakers[]>([])
+const favorites = ref<CartItem[]>([])
 
 onMounted(async () => {
   try {

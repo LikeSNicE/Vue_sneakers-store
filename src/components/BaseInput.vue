@@ -4,10 +4,18 @@ interface BaseInput {
   label?: string
   modelValue?: string | number
   placeholder?: string
+  onInput?: (event: Event) => void
+  error?: string
 }
-
-const { type = 'text', label = '', modelValue = '', placeholder = '' } = defineProps<BaseInput>()
-
+defineOptions({ inheritAttrs: false })
+const {
+  type = 'text',
+  label = '',
+  modelValue = '',
+  placeholder = '',
+  onInput,
+  error,
+} = defineProps<BaseInput>()
 const emit = defineEmits(['update:modelValue'])
 </script>
 
@@ -16,10 +24,17 @@ const emit = defineEmits(['update:modelValue'])
     <label v-if="label" class="block mb-2 text-sm font-medium">{{ label }}</label>
     <input
       class="border focus:outline-none focus:ring-2 focus:ring-lime-600 p-2 w-full rounded-xl transition placeholder-gray-400 ease-in-out duration-300"
-      :placeholder="placeholder"
+      v-bind="$attrs"
       :type="type"
-      :value="modelValue"
-      @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      :placeholder="placeholder"
+      :value="modelValue ?? $attrs.value"
+      @input="
+        ($event: Event) => {
+          emit('update:modelValue', ($event.target as HTMLInputElement).value)
+          onInput?.($event)
+        }
+      "
     />
+    <p class="text-red-600 text-sm">{{ error }}</p>
   </div>
 </template>

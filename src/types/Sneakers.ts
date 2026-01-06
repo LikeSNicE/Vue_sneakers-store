@@ -18,4 +18,8 @@ export type SneakersCard = Pick<
   'id' | 'title' | 'price' | 'imageUrl' | 'isFavorite' | 'isAdded'
 >
 
-export type SneakersCardWide = Omit<Sneakers, 'isAdded' | 'isFavorite' | 'favoriteId'>
+// export type SneakersCardWide = Omit<Sneakers, 'isAdded' | 'isFavorite' | 'favoriteId'>
+
+export type SneakersCardWide = Omit<Sneakers, 'isAdded' | 'isFavorite' | 'favoriteId'> & {
+  quantity: number
+}
