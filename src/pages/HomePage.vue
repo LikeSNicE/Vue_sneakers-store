@@ -5,7 +5,7 @@ import CardList from '../components/CardList.vue'
 import { useLoadingStore } from '@/stores/loadingStore'
 import CardListSkeleton from '@/components/CardListSkeleton.vue'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
-import { useCartStore } from '@/stores/cartStore'
+import { useCartStore } from '@/stores/CartStore'
 import { useFilterStore } from '@/stores/filtersStore'
 import { useGoodsStore } from '@/stores/goodsStore'
 
@@ -74,7 +74,6 @@ watch(filterStore.filters, () => goodsStore.fetchItems(), {
       :is-favorites="false"
       :items="goodsStore.goods"
       @add-to-favorite="goodsStore.addToFavorite"
-      @add-to-cart="goodsStore.onClickAddPlus"
     />
   </div>
 </template>

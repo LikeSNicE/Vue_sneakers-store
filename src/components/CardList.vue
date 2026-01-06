@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Card from './Card.vue'
-import { type SneakersCard } from '@/types/Sneakers'
+import { CartItem } from '@/types/Cart'
 
 defineProps<{
-  items: SneakersCard[]
+  items: CartItem[]
   isFavorites: boolean
 }>()
 
@@ -17,13 +17,13 @@ const emit = defineEmits(['addToFavorite', 'addToCart'])
   >
     <Card
       v-for="item in items"
+      :item="item"
       :key="item.id"
       :id="item.id"
       :title="item.title"
       :imageUrl="item.imageUrl"
       :price="item.price"
       :onClickFavorite="isFavorites ? undefined : () => emit('addToFavorite', item)"
-      :onClickAdd="() => emit('addToCart', item)"
       :isFavorite="item.isFavorite"
       :isAdded="item.isAdded"
     />

@@ -1,13 +1,10 @@
 import axios from 'axios'
 import { useLoadingStore } from '@/stores/loadingStore'
 import { getErrorMessage } from '@/utils/errors'
-
-const base_url = 'https://647af5741cbcb2a0.mokky.dev'
-
-// apiInstance
+import { API_BASE_URL } from '@/config/baseUrl'
 
 const api = axios.create({
-  baseURL: base_url,
+  baseURL: API_BASE_URL,
 })
 
 //getToken

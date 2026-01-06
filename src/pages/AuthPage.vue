@@ -9,18 +9,27 @@ import { getErrorMessage } from '@/utils/errors'
 import BaseInput from '@/components/BaseInput.vue'
 import { type AuthCredentials } from '@/types/Users'
 
-// Рефы для полей формы
-const email = ref('')
-const password = ref('')
+import { Form, Field } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as z from 'zod'
+
+const validationSchema = toTypedSchema(
+  z.object({
+    email: z.string().min(1, 'Email обязателен').email('Введите корректный email'),
+    password: z.string().min(1, 'Пароль обязателен').min(8, 'Минимум 8 символов'),
+  }),
+)
 
 const router = useRouter()
 
 // Функция авторизации пользователя
-const loginUser = async (): Promise<void> => {
+const loginUser = async (values: Record<string, any>) => {
+  const { email, password } = values
+
   try {
     const registerObj: AuthCredentials = {
-      email: email.value,
-      password: password.value,
+      email,
+      password,
     }
 
     // Отправляем запрос на авторизацию
@@ -50,13 +59,33 @@ const loginUser = async (): Promise<void> => {
   <AuthSlot>
     <template #title-form> Войти </template>
     <template #form>
-      <form class="flex flex-col gap-2" @submit.prevent="loginUser">
-        <BaseInput label="Email" placeholder="user@example.com" type="email" v-model="email" />
+      <Form :validation-schema="validationSchema" class="flex flex-col gap-2" @submit="loginUser">
+        <Field name="email" v-slot="{ field, errorMessage }" validateOnValueUpdate>
+          <BaseInput
+            v-bind="field"
+            type="email"
+            label="Email"
+            placeholder="Введите адрес электронной почты"
+            :model-value="field.value"
+            @update:modelValue="field.onChange"
+            :error="errorMessage"
+          />
+        </Field>
 
-        <BaseInput label="Пароль" placeholder="********" v-model="password" type="password" />
+        <Field name="password" v-slot="{ field, errorMessage }" validateOnValueUpdate>
+          <BaseInput
+            v-bind="field"
+            type="password"
+            label="Пароль"
+            placeholder="Введите пароль"
+            :model-value="field.value"
+            @update:modelValue="field.onChange"
+            :error="errorMessage"
+          />
+        </Field>
 
         <BaseButton type="submit" label="Войти" class="mt-3" />
-      </form>
+      </Form>
     </template>
     <template #link>
       <RouterLink

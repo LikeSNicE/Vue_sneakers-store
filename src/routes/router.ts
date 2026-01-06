@@ -9,6 +9,7 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import HomeLayout from '@/layouts/HomeLayout.vue'
 import ProfileLayout from '@/layouts/ProfileLayout.vue'
 import ProfileOrders from '@/components/ProfileOrders.vue'
+import FullCard from '@/components/FullCard.vue'
 import Test from '@/components/Test.vue'
 
 const routes = [
@@ -51,6 +52,11 @@ const routes = [
         path: 'test',
         name: 'test',
         component: Test,
+      },
+      {
+        path: 'sneakers/:sneakerId',
+        name: 'fullCard',
+        component: FullCard,
       },
     ],
   },
