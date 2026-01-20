@@ -8,18 +8,20 @@ export interface Sneakers {
   favoriteId: null
 }
 
-export interface IItemsParams {
-  sortBy: string
+export interface ItemsParams {
+  sortBy?: string
   title?: string
+  page?: string | number
+  limit?: string | number
 }
 
-export type SneakersCard = Pick<
-  Sneakers,
-  'id' | 'title' | 'price' | 'imageUrl' | 'isFavorite' | 'isAdded'
->
-
-// export type SneakersCardWide = Omit<Sneakers, 'isAdded' | 'isFavorite' | 'favoriteId'>
-
-export type SneakersCardWide = Omit<Sneakers, 'isAdded' | 'isFavorite' | 'favoriteId'> & {
+export interface SneakersCart extends Sneakers {
   quantity: number
 }
+
+export type CardList<T> = {
+  items: T[]
+  isFavorites: boolean
+}
+
+export type SneakersCardWide = Omit<SneakersCart, 'isAdded' | 'isFavorite' | 'favoriteId'>

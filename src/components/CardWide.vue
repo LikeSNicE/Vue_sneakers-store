@@ -34,10 +34,10 @@ import { RouterLink } from 'vue-router'
       >
         <span сlass="text-slate-400  max-[768px]:hidden ">Цена:</span>
         <p>
-          <b>{{ quantity * price }}</b> тнг
+          <b>{{ quantity * price }}</b> тенге
         </p>
       </div>
-      <p class="flex justify-end text-gray-700 text-sm">{{ quantity }} шт.x{{ price }} тнг</p>
+      <p class="flex justify-end text-gray-700 text-sm">{{ quantity }} шт.x{{ price }} тенге</p>
     </div>
   </div>
 </template>

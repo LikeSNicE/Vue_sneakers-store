@@ -4,19 +4,25 @@ import { useLoadingStore } from './loadingStore'
 import { useCartStore } from './CartStore'
 import { useFilterStore } from './filtersStore'
 import { api } from '@/services/api'
-import { type Sneakers, type IItemsParams } from '@/types/Sneakers'
+import { type Sneakers, type ItemsParams } from '@/types/Sneakers'
 import { getErrorMessage } from '@/utils/errors'
-import { type CartItem } from '@/types/Cart'
+import { SneakersCart } from '@/types/Sneakers'
+import { type MetaPagination, Pagination } from '@/types/Pagination'
 
 export const useGoodsStore = defineStore('goods', () => {
   const loadingStore = useLoadingStore()
   const cartStore = useCartStore()
   const filterStore = useFilterStore()
 
-  const goods = ref<CartItem[]>([])
-  const currentSneaker = ref<CartItem | null>(null)
+  const goods = ref<SneakersCart[]>([])
+  const currentSneaker = ref<SneakersCart | null>(null)
 
-  const onClickAddPlus = (item: CartItem) => {
+  // пагинация
+  const meta = ref<MetaPagination | null>(null)
+  const current_page = ref(1) // текущая страница
+  const limit = ref(8) // количество items на странице
+
+  const onClickAddPlus = (item: SneakersCart) => {
     if (!item.isAdded) {
       cartStore.addToCart(item)
     } else {
@@ -59,32 +65,34 @@ export const useGoodsStore = defineStore('goods', () => {
     }
   }
 
-  const fetchFavorites = async () => {
-    try {
-      await api.get('/items')
-    } catch (error: unknown) {
-      const errorMessage = getErrorMessage(error)
-      console.error(errorMessage)
-    }
-  }
+  // const fetchFavorites = async () => {
+  //   try {
+  //     await api.get('/items')
+  //   } catch (error: unknown) {
+  //     const errorMessage = getErrorMessage(error)
+  //     console.error(errorMessage)
+  //   }
+  // }
 
   const fetchItems = async () => {
     try {
       loadingStore.startLoading()
 
-      const params: IItemsParams = {
+      const params: ItemsParams = {
         sortBy: filterStore.filters.sortBy,
+        page: current_page.value,
+        limit: limit.value,
       }
 
       if (filterStore.filters.searchQuery) {
         params.title = `*${filterStore.filters.searchQuery}*`
+        setCurrentPage(1) // Выводим первую текущую страницу при поиске товара
       }
 
-      const { data } = await api.get(`/items`, { params })
+      const { data }: { data: Pagination<SneakersCart> } = await api.get(`/items`, { params })
 
-      console.log(data)
-
-      goods.value = data
+      goods.value = data.items
+      meta.value = data.meta
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error)
       console.error(errorMessage)
@@ -117,13 +125,19 @@ export const useGoodsStore = defineStore('goods', () => {
     }
   }
 
+  const setCurrentPage = (page: number) => {
+    current_page.value = page
+  }
+
   return {
     goods,
     currentSneaker,
+    meta,
+    current_page,
     fetchItems,
-    fetchFavorites,
     addToFavorite,
     onClickAddPlus,
     fetchSneaker,
+    setCurrentPage,
   }
 })

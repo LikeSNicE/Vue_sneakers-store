@@ -3,8 +3,8 @@ import { watch } from 'vue'
 import Header from '@/components/Header.vue'
 import Drawer from '@/components/Drawer.vue'
 import { useDrawerStore } from '@/stores/drawerStore'
-import { useCartStore } from '@/stores/cartStore'
-import Logo from '@/components/Logo.vue'
+import { useCartStore } from '@/stores/CartStore'
+import { authState } from '@/services/auth'
 
 const drawerStore = useDrawerStore()
 const cartStore = useCartStore()
@@ -25,13 +25,14 @@ watch(
     :vatPrice="cartStore.vatPrice"
   />
 
-  <div
-    class="w-4/5 bg-white m-auto rounded-xl shadow-xl mt-14 max-[1280px]:p-0 max-[1280px]:mt-0 max-[1280px]:w-full main-content"
-  >
-    <Header :total-price="cartStore.totalPrice" @open-drawer="drawerStore.openDrawer()" />
-
-    <div class="p-10 max-[768px]:p-5">
-      <router-view></router-view>
+  <Header :total-price="cartStore.totalPrice" @open-drawer="drawerStore.openDrawer()" />
+  <div class="container">
+    <div
+      class="m-auto rounded-xl max-[1280px]:p-0 max-[1280px]:mt-0 max-[1280px]:w-full main-content"
+    >
+      <div class="p-10 max-[768px]:p-5">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>

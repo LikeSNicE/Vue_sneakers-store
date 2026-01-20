@@ -22,7 +22,7 @@ const props = defineProps<{
 
     <div class="flex flex-col flex-1 min-w-0">
       <div class="flex justify-between items-center">
-        <b>{{ itemTotalPrice }} тнг.</b>
+        <b>{{ itemTotalPrice }} тенге.</b>
 
         <img
           @click="emit('onClickRemove')"

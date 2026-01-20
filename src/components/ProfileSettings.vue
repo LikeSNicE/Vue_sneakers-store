@@ -85,9 +85,9 @@ onMounted(async () => {
         @click="updateUserData"
         :disabled="loadingStore.isLoading || !userData"
         :isLoading="loadingStore.isLoading"
-        label="Сохранить данные"
         class="px-2"
-      />
+        >Сохранить данные</BaseButton
+      >
       <button
         @click="handleLogOut"
         class="bg-red-700 text-white p-1.5 rounded-xl w-20 hover:bg-[#E2062C]"

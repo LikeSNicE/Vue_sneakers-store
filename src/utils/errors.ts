@@ -1,5 +1,12 @@
 import axios from 'axios'
 
+// Ошибки разного вида
+// throw new Error('test') // Native JS Error
+// throw 'Ошибка string' // String Error;
+// throw { message: 'Ошибка объекта' } // object error
+// Promise.reject({ message: 'test object error' }) // object error
+// throw null // fallback
+
 interface ApiError {
   message: string
   status?: number
@@ -7,36 +14,75 @@ interface ApiError {
 }
 
 export const getErrorMessage = (error: unknown): ApiError => {
-  const defaultError: ApiError = {
-    message: 'Произошла непревдиденная ошибка',
-    status: 500,
-  }
-
   if (axios.isAxiosError(error)) {
-    const status = error.response?.status
-    const data = error.response?.data as any
+    console.log('isAxiosError: ', error)
 
-    switch (status) {
-      case 401:
-        return {
-          message: data?.message || 'Сессия истекла. Пожалуйста, войдите снова.',
-          status: 401,
-          code: 'UNAUTHORIZED',
-        }
+    const status = error.response?.status
+    const data = error.response?.data as { message: string }
+
+    if (status === 400) {
+      return {
+        message: data?.message ?? 'Плохой запрос',
+        status,
+        code: 'BAD_REQUEST',
+      }
+    } else if (status === 401) {
+      return {
+        message: data?.message ?? 'Сессия истекла. Пожалуйста, войдите снова.',
+        status,
+        code: 'UNAUTHORIZED',
+      }
+    } else if (status === 403) {
+      return {
+        message: data?.message ?? 'Доступ закрыт',
+        status,
+        code: 'FORBIDDEN',
+      }
+    } else if (status === 404) {
+      return {
+        message: data?.message ?? 'Not found',
+        status,
+        code: 'NOT_FOUND',
+      }
+    } else if (status === 500) {
+      return {
+        message: data?.message ?? 'Internal server error',
+        status,
+        code: 'INTERNAL_SERVER_ERROR',
+      }
+    } else if (status === 503) {
+      return {
+        message: data?.message ?? 'Service unavailable',
+        status,
+        code: 'SERVICE_UNAVAILABLE',
+      }
+    }
+  }
+  // Native JS Error (object)
+  if (error instanceof Error) {
+    console.log('instanceof Error: ', error)
+    return {
+      message: error.message,
+    }
+  }
+  // String error
+  if (typeof error === 'string') {
+    console.log('string Error: ', error)
+    return {
+      message: error,
     }
   }
 
-  if (error instanceof Error) {
-    defaultError.message = error.message
-  }
-
-  if (typeof error === 'string') {
-    defaultError.message = error
-  }
-
+  // ukknown object error
   if (error && typeof error === 'object' && 'message' in error) {
-    defaultError.message = String((error as { message: unknown }).message)
+    console.log('object Error: ', error)
+    return {
+      message: String((error as { message: unknown }).message),
+    }
   }
 
-  return defaultError
+  // Fallback
+  return {
+    message: 'Произошла непредвиденная ошибка',
+  }
 }

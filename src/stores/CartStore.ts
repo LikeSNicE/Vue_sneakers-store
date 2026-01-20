@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { type CartItem } from '@/types/Cart'
+import { SneakersCart } from '@/types/Sneakers'
 import { useGoodsStore } from './goodsStore'
 import { api } from '@/services/api'
 
 export const useCartStore = defineStore('cart', () => {
   const goodsStore = useGoodsStore()
-  const cart = ref<CartItem[]>([])
+  const cart = ref<SneakersCart[]>([])
 
   const totalPrice = computed(() =>
     cart.value.reduce((acc, item) => acc + item.price * item.quantity, 0),
@@ -14,7 +14,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const vatPrice = computed(() => Math.round((totalPrice.value * 16) / 100))
 
-  const addToCart = async (product: CartItem) => {
+  const addToCart = async (product: SneakersCart) => {
     const cartItem = cart.value.find((i) => i.id === product.id)
     const sneaker = goodsStore.goods.find((g) => g.id === product.id)
 
@@ -31,7 +31,7 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  const removeFromCart = async (product: CartItem) => {
+  const removeFromCart = async (product: SneakersCart) => {
     const sneaker = goodsStore.goods.find((g) => g.id === product.id)
 
     await api.patch(`/items/${sneaker?.id}`, { isAdded: false })
@@ -55,7 +55,23 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
 
-  const clearCart = () => {
+  // локально обновляем UI сразу
+  const clearCart = async () => {
+    cart.value.forEach((cartItem: SneakersCart) => {
+      const sneaker = goodsStore.goods.find((g) => g.id === cartItem.id)
+
+      if (sneaker) sneaker.isAdded = false
+    })
+
+    // на сервер отправляем PATCH для каждого товара
+    const promises = cart.value.map(
+      async (item: SneakersCart) =>
+        await api.patch(`/items/${item.id}`, {
+          isAdded: false,
+        }),
+    )
+
+    await Promise.all(promises)
     cart.value = []
   }
 

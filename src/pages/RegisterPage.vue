@@ -8,31 +8,25 @@ import AuthSlot from '@/components/AuthSlot.vue'
 import { getErrorMessage } from '@/utils/errors'
 import BaseInput from '@/components/BaseInput.vue'
 import { type RegisterCredentials } from '@/types/Users'
-import z from 'zod'
-import { Form, Field } from 'vee-validate'
+import { Field, useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
+import { registerSchema } from '@/validation/authSchema'
 
-const email = ref('')
-const password = ref('')
-const userName = ref('')
 const router = useRouter()
 
-const validationSchema = toTypedSchema(
-  z.object({
-    email: z.string().min(1, 'Email обязателен').email('Введите корректный email'),
-    password: z
-      .string()
-      .min(1, 'Поле обязательно')
-      .min(8, 'Пароль должен быть не меньше 8 символов'),
-    userName: z.string().min(1, 'Поле обязательно'),
-  }),
-)
+const { handleSubmit } = useForm({
+  validationSchema: toTypedSchema(registerSchema),
+})
 
-const registerUser = async (values: Record<string, any>): Promise<void> => {
+const onSubmit = handleSubmit((values) => {
+  registerUser(values)
+})
+
+const registerUser = async (values: RegisterCredentials): Promise<void> => {
   const { email, password, userName } = values
 
   try {
-    const registerFields: RegisterCredentials = {
+    const registerFields = {
       email,
       userName,
       password,
@@ -58,11 +52,7 @@ const registerUser = async (values: Record<string, any>): Promise<void> => {
   <AuthSlot>
     <template #title-form> Регистрация </template>
     <template #form>
-      <Form
-        class="flex flex-col gap-2"
-        :validation-schema="validationSchema"
-        @submit="registerUser"
-      >
+      <form class="flex flex-col gap-2" @submit="onSubmit">
         <Field name="userName" v-slot="{ field, errorMessage }">
           <BaseInput
             label="Имя пользователя"
@@ -94,8 +84,8 @@ const registerUser = async (values: Record<string, any>): Promise<void> => {
           />
         </Field>
 
-        <BaseButton type="submit" label="Создать аккаунт" class="mt-3 w-full"></BaseButton>
-      </Form>
+        <BaseButton type="submit" class="mt-3 w-full">Создать аккаунт</BaseButton>
+      </form>
     </template>
 
     <template #link>

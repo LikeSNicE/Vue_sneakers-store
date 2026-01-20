@@ -7,25 +7,29 @@ import CartItemList from './CartItemList.vue'
 import InfoBlock from './infoBlock.vue'
 import BaseButton from './BaseButton.vue'
 
+import { type SneakersCart } from '@/types/Sneakers'
 import { useLoadingStore } from '@/stores/loadingStore'
 import { useCartStore } from '@/stores/CartStore'
-import { useGoodsStore } from '@/stores/goodsStore'
 import { getErrorMessage } from '@/utils/errors'
-import { type CartItem } from '@/types/Cart'
-const emit = defineEmits(['createOrder'])
 
 const props = defineProps<{
   totalPrice: number
   vatPrice: number
 }>()
 
+type Orders<T> = {
+  id: number
+  items: T[]
+  totalPrice: number
+  userId: number
+}
+
 const loadingStore = useLoadingStore()
 const cartStore = useCartStore()
-const goodsStore = useGoodsStore()
 
 const isCreating = ref(false)
-const orderId = ref(null)
-const totalOrderPrice = ref(null)
+const orderId = ref<number | null>(null)
+const totalOrderPrice = ref<number | null>(null)
 
 const createOrder = async (): Promise<void> => {
   loadingStore.startLoading()
@@ -39,7 +43,7 @@ const createOrder = async (): Promise<void> => {
       throw new Error('Пользователь не найден')
     }
 
-    const { data } = await api.post(`/orders`, {
+    const { data } = await api.post<Orders<SneakersCart>>(`/orders`, {
       items: cartStore.cart,
       totalPrice: props.totalPrice,
       userId,
@@ -47,20 +51,7 @@ const createOrder = async (): Promise<void> => {
 
     console.log(data)
 
-    // локально обновляем UI сразу
-    cartStore.cart.forEach((cartItem: CartItem) => {
-      const item = goodsStore.goods.find((g) => g.id === cartItem.id)
-
-      if (item) item.isAdded = false
-    })
-
-    // на сервер отправляем PATCH для каждого товара
-    const promises = cartStore.cart.map(
-      async (item: CartItem) => await api.patch(`/items/${item.id}`, { isAdded: false }),
-    )
-    await Promise.all(promises) // выполняем все параллельно
-
-    cartStore.cart = []
+    cartStore.clearCart()
 
     // return data
     orderId.value = data.id
@@ -123,13 +114,9 @@ const buttonDisabled = computed(() => isCreating.value || cartIsEmpty.value)
             <b>{{ vatPrice }} Тенге</b>
           </div>
 
-          <BaseButton
-            @click="createOrder"
-            label="Оформить Заказ"
-            :disabled="buttonDisabled"
-            full-width
-            class="mt-7 w-full"
-          />
+          <BaseButton @click="createOrder" :disabled="buttonDisabled" class="mt-7 w-full">
+            Оформить Заказ</BaseButton
+          >
         </div>
       </div>
     </div>

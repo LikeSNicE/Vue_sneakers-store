@@ -13,7 +13,7 @@ import { useCartStore } from '@/stores/CartStore'
 import { useGoodsStore } from '@/stores/goodsStore'
 import { getErrorMessage } from '@/utils/errors'
 import { type FavoritesSneakers } from '@/types/Favorites'
-import { type CartItem } from '@/types/Cart'
+import { type SneakersCart } from '@/types/Sneakers'
 
 const loadingStore = useLoadingStore()
 const goodsStore = useGoodsStore()
@@ -21,7 +21,7 @@ const { goBack } = useGoBack()
 
 const cartStore = useCartStore()
 
-const favorites = ref<CartItem[]>([])
+const favorites = ref<SneakersCart[]>([])
 
 onMounted(async () => {
   try {

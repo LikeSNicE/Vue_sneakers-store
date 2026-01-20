@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '@/services/auth'
 import { api } from '@/services/api'
@@ -8,32 +7,32 @@ import AuthSlot from '@/components/AuthSlot.vue'
 import { getErrorMessage } from '@/utils/errors'
 import BaseInput from '@/components/BaseInput.vue'
 import { type AuthCredentials } from '@/types/Users'
+import { loginSchema } from '@/validation/authSchema'
 
-import { Form, Field } from 'vee-validate'
+import { Field, useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import * as z from 'zod'
 
-const validationSchema = toTypedSchema(
-  z.object({
-    email: z.string().min(1, 'Email обязателен').email('Введите корректный email'),
-    password: z.string().min(1, 'Пароль обязателен').min(8, 'Минимум 8 символов'),
-  }),
-)
+const { handleSubmit } = useForm({
+  validationSchema: toTypedSchema(loginSchema),
+})
+
+const onSubmit = handleSubmit((values) => {
+  loginUser(values)
+})
 
 const router = useRouter()
 
 // Функция авторизации пользователя
-const loginUser = async (values: Record<string, any>) => {
+const loginUser = async (values: AuthCredentials) => {
   const { email, password } = values
 
   try {
-    const registerObj: AuthCredentials = {
+    const loginUserFields = {
       email,
       password,
     }
 
-    // Отправляем запрос на авторизацию
-    const response = await api.post(`/auth`, registerObj as AuthCredentials, {
+    const response = await api.post(`/auth`, loginUserFields as AuthCredentials, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -41,10 +40,10 @@ const loginUser = async (values: Record<string, any>) => {
     })
 
     if (response.status === 200 || response.status === 201) {
-      const { token } = response.data
-
-      login(token)
       await router.push('/')
+      const { token } = response.data
+      login(token)
+      console.log(values)
     } else {
       console.log(`Ошибка авторизации. ${response.statusText}`)
     }
@@ -59,10 +58,9 @@ const loginUser = async (values: Record<string, any>) => {
   <AuthSlot>
     <template #title-form> Войти </template>
     <template #form>
-      <Form :validation-schema="validationSchema" class="flex flex-col gap-2" @submit="loginUser">
-        <Field name="email" v-slot="{ field, errorMessage }" validateOnValueUpdate>
+      <form @submit="onSubmit" class="flex flex-col gap-2">
+        <Field name="email" v-slot="{ field, errorMessage }">
           <BaseInput
-            v-bind="field"
             type="email"
             label="Email"
             placeholder="Введите адрес электронной почты"
@@ -72,7 +70,7 @@ const loginUser = async (values: Record<string, any>) => {
           />
         </Field>
 
-        <Field name="password" v-slot="{ field, errorMessage }" validateOnValueUpdate>
+        <Field name="password" v-slot="{ field, errorMessage }">
           <BaseInput
             v-bind="field"
             type="password"
@@ -84,8 +82,8 @@ const loginUser = async (values: Record<string, any>) => {
           />
         </Field>
 
-        <BaseButton type="submit" label="Войти" class="mt-3" />
-      </Form>
+        <BaseButton type="submit" class="mt-3 w-full">Войти</BaseButton>
+      </form>
     </template>
     <template #link>
       <RouterLink

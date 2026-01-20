@@ -197,8 +197,9 @@ onMounted(async () => {
         @click="goodsStore.onClickAddPlus(goodsStore.currentSneaker)"
         class="w-full py-2 mt-4"
         :class="[goodsStore.currentSneaker.isAdded ? 'bg-gray-600 hover:bg-gray-600' : '']"
-        label="Купить"
-      />
+      >
+        Купить</BaseButton
+      >
     </div>
   </div>
 </template>

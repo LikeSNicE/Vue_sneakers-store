@@ -11,6 +11,8 @@ import ProfileLayout from '@/layouts/ProfileLayout.vue'
 import ProfileOrders from '@/components/ProfileOrders.vue'
 import FullCard from '@/components/FullCard.vue'
 import Test from '@/components/Test.vue'
+import { authState } from '@/services/auth'
+import PageNotFound from '@/components/PageNotFound.vue'
 
 const routes = [
   {
@@ -25,10 +27,12 @@ const routes = [
         path: 'favorites',
         name: 'Favorites',
         component: Favorites,
+        meta: { requiresAuth: true },
       },
       {
         path: 'profile',
         component: ProfileLayout,
+        meta: { requiresAuth: true },
         children: [
           {
             path: 'settings',
@@ -52,6 +56,7 @@ const routes = [
         path: 'test',
         name: 'test',
         component: Test,
+        meta: { requiresAuth: true },
       },
       {
         path: 'sneakers/:sneakerId',
@@ -72,11 +77,23 @@ const routes = [
       { path: 'register', name: 'register', component: RegisterPage },
     ],
   },
+  {
+    path: '/:pathMatch(.*)',
+    component: PageNotFound,
+  },
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+})
+
+router.beforeEach((to, _from, next) => {
+  if (to.meta.requiresAuth && !authState.isAuthenticated) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router

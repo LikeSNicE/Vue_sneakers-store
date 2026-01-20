@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-
 import { api } from '@/services/api'
 import { getUserIdFromToken } from '@/services/api'
 import { useLoadingStore } from '@/stores/loadingStore'
@@ -8,10 +7,11 @@ import ProfileOrdersSkeleton from '@/components/ProfileOrdersSkeleton.vue'
 import NoOrders from '@/components/NoOrders.vue'
 import CardWideList from './CardWideList.vue'
 import TitleBaseSlot from './TitleBaseSlot.vue'
-import { type SneakersOrdersParams, type BaseOrder } from '@/types/Orders'
+import { type SneakersOrdersParams, SneakersOrders } from '@/types/Orders'
+import { SneakersCart } from '@/types/Sneakers'
 
 const loadingStore = useLoadingStore()
-const userOrders = ref<BaseOrder[] | null>(null)
+const userOrders = ref<SneakersOrders<SneakersCart>[] | null>(null)
 
 //  computed свойство для сортировки заказов
 const sortedOrders = computed(() => {
@@ -36,10 +36,10 @@ const fetchOrders = async () => {
       _relations: 'items',
     }
 
-    const { data } = await api.get(`/orders`, {
+    const { data } = await api.get<SneakersOrders<SneakersCart>[]>(`/orders`, {
       params: ordersParams,
     })
-
+    console.log('data from orders: ', data)
     userOrders.value = data
   } catch (error) {
     console.error(error)

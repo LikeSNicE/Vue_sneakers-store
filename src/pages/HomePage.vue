@@ -8,6 +8,8 @@ import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
 import { useCartStore } from '@/stores/CartStore'
 import { useFilterStore } from '@/stores/filtersStore'
 import { useGoodsStore } from '@/stores/goodsStore'
+import Pagination from '@/components/Pagination.vue'
+import NotFoundItem from '@/components/NotFoundItem.vue'
 
 const cartStore = useCartStore()
 
@@ -24,12 +26,12 @@ const onChangeSearchInput = debounce((event: Event) => {
 }, 300)
 
 onMounted(async () => {
+  // Для корзина чтобы при перезагрузке не терялось состояние
   const localCart = localStorage.getItem('cart')
-
+  // Если данные есть то присваиваем в cartStore.cart
   cartStore.cart = localCart ? JSON.parse(localCart) : []
 
   await goodsStore.fetchItems()
-  await goodsStore.fetchFavorites()
 })
 
 watch(
@@ -43,6 +45,11 @@ watch(
 watch(filterStore.filters, () => goodsStore.fetchItems(), {
   deep: true,
 })
+
+watch(
+  () => goodsStore.current_page,
+  () => goodsStore.fetchItems(),
+)
 </script>
 
 <template>
@@ -68,12 +75,18 @@ watch(filterStore.filters, () => goodsStore.fetchItems(), {
     </div>
   </div>
   <div class="mt-10">
+    <NotFoundItem v-if="goodsStore.goods.length === 0" />
     <CardListSkeleton v-if="loadingStore.isLoading" />
 
     <CardList
       :is-favorites="false"
       :items="goodsStore.goods"
       @add-to-favorite="goodsStore.addToFavorite"
+    />
+
+    <Pagination
+      :total-pages="goodsStore.meta?.total_pages"
+      :current-page="goodsStore.meta?.current_page"
     />
   </div>
 </template>
