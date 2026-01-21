@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { authState } from '../services/auth'
-import { useDrawerStore } from '../stores/drawerStore'
+import { useDrawerStore } from '../stores/drawer-store'
 import Logo from './Logo.vue'
 import { logout } from '../services/auth'
 import { useRouter } from 'vue-router'
 import { type NavItem, type HeaderProps } from '@/types/Header'
-import { useUiStore } from '@/stores/UiStore'
+import { useUiStore } from '@/stores/ui-store'
 import { useClickOutside } from '@/composables/useClickOutside'
 import { ref } from 'vue'
 
@@ -41,7 +41,7 @@ useClickOutside(menuProfileRef, () => uiStore.closeAllMenus())
   <header class="border-b border-slate-200 z-0">
     <div class="container">
       <div
-        class="flex justify-between items-center px-10 py-8 header-content-display max-[1024px]:py-4 max-[1024px]:px-5 header-md header-sm"
+        class="flex justify-between items-center py-8 header-content-display max-[1024px]:py-4 max-[1024px]:px-4 header-md header-sm"
       >
         <div class="flex gap-4">
           <Logo @click="uiStore.closeAllMenus" />
@@ -54,7 +54,7 @@ useClickOutside(menuProfileRef, () => uiStore.closeAllMenus())
           </div>
         </div>
 
-        <ul class="flex items-center gap-9 max-[500px]:gap-4">
+        <ul class="flex items-center gap-9 max-[500px]:gap-4 max-[320px]:gap-4">
           <li
             v-if="authState.isAuthenticated"
             @click="
@@ -63,19 +63,19 @@ useClickOutside(menuProfileRef, () => uiStore.closeAllMenus())
                 handleItemClick()
               }
             "
-            class="flex items-center gap-3 text-slate-500 cursor-pointer hover:text-black max-[500px]:flex-col max-[500px]:gap-1"
+            class="flex items-center gap-3 text-slate-500 cursor-pointer hover:text-black max-[400px]:gap-3"
           >
             <img src="/cart.svg" alt="cart" />
-            <b class="">{{ totalPrice }} тенге</b>
+            <b class="max-[400px]:text-sm">{{ totalPrice }} тенге</b>
           </li>
 
           <li @click="uiStore.closeAllMenus">
             <router-link
-              class="flex items-center gap-3 text-slate-500 cursor-pointer hover:text-black max-[500px]:flex-col max-[500px]:gap-1"
+              class="flex items-center gap-3 text-slate-500 cursor-pointer hover:text-black max-[400px]:gap-1"
               to="/favorites"
             >
               <img src="/heart.svg" alt="heart" />
-              <span>Избранное</span>
+              <span class="max-[400px]:text-sm max-[375px]:hidden">Избранное</span>
             </router-link>
           </li>
 
@@ -163,30 +163,31 @@ useClickOutside(menuProfileRef, () => uiStore.closeAllMenus())
       width: 100%;
       background-color: #fff;
       z-index: 2;
-      padding: 16px;
       justify-content: center;
       gap: 36px;
+      padding: 8px;
     }
   }
 
   @media (max-width: 500px) {
-    gap: 16px;
+    gap: 10px;
   }
 }
 
 .header-sm {
   @media (max-width: 380px) {
-    justify-content: space-between;
-    flex-direction: column;
+    // justify-content: space-between;
+    // flex-direction: column;
+    padding: 10px 5px;
   }
 
   @media (max-width: 320px) {
-    padding: 10px;
+    // padding: 10px;
   }
 
   & ul {
     @media (max-width: 380px) {
-      order: -1;
+      // order: -1;
     }
   }
 }

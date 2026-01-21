@@ -2,9 +2,8 @@
 import { watch } from 'vue'
 import Header from '@/components/Header.vue'
 import Drawer from '@/components/Drawer.vue'
-import { useDrawerStore } from '@/stores/drawerStore'
-import { useCartStore } from '@/stores/CartStore'
-import { authState } from '@/services/auth'
+import { useDrawerStore } from '@/stores/drawer-store'
+import { useCartStore } from '@/stores/cart-store'
 
 const drawerStore = useDrawerStore()
 const cartStore = useCartStore()
@@ -30,7 +29,7 @@ watch(
     <div
       class="m-auto rounded-xl max-[1280px]:p-0 max-[1280px]:mt-0 max-[1280px]:w-full main-content"
     >
-      <div class="p-10 max-[768px]:p-5">
+      <div class="pt-4 pb-20">
         <router-view></router-view>
       </div>
     </div>

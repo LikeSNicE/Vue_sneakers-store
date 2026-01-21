@@ -8,8 +8,8 @@ import InfoBlock from './infoBlock.vue'
 import BaseButton from './BaseButton.vue'
 
 import { type SneakersCart } from '@/types/Sneakers'
-import { useLoadingStore } from '@/stores/loadingStore'
-import { useCartStore } from '@/stores/CartStore'
+import { useLoadingStore } from '@/stores/loading-store'
+import { useCartStore } from '@/stores/cart-store'
 import { getErrorMessage } from '@/utils/errors'
 
 const props = defineProps<{

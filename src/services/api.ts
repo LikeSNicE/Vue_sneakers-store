@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useLoadingStore } from '@/stores/loadingStore'
+import { useLoadingStore } from '@/stores/loading-store'
 import { getErrorMessage } from '@/utils/errors'
 import { API_BASE_URL } from '@/config/baseUrl'
 

@@ -4,12 +4,11 @@ import { api, getUserData } from '../services/api'
 import BaseButton from '@/components/BaseButton.vue'
 import { logout } from '@/services/auth'
 import { useRouter } from 'vue-router'
-import { useLoadingStore } from '@/stores/loadingStore'
+import { useLoadingStore } from '@/stores/loading-store'
 import { type User } from '@/types/Users'
 import { getErrorMessage } from '@/utils/errors'
 import BaseInput from './BaseInput.vue'
 
-// Используем ref для одного объекта пользователя, инициализируя его базовой структурой.
 // Это предотвратит ошибки в шаблоне до загрузки данных.
 const userData = ref<User | null>(null)
 

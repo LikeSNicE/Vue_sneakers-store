@@ -1,4 +1,4 @@
-import { type Sneakers } from './sneakers'
+import { type Sneakers } from './Sneakers'
 
 export interface FavoritesSneakers {
   id: number

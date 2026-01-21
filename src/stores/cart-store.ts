@@ -1,18 +1,43 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { SneakersCart } from '@/types/Sneakers'
-import { useGoodsStore } from './goodsStore'
+import { useGoodsStore } from './goods-store'
 import { api } from '@/services/api'
 
 export const useCartStore = defineStore('cart', () => {
   const goodsStore = useGoodsStore()
   const cart = ref<SneakersCart[]>([])
 
-  const totalPrice = computed(() =>
-    cart.value.reduce((acc, item) => acc + item.price * item.quantity, 0),
-  )
+  const totalPrice = computed(() => {
+    console.log('Calculating totalPrice...')
+    console.log('Current cart:', cart.value)
+    const result = cart.value.reduce((acc, item) => {
+      const price = Number(item.price)
+      const quantity = Number(item.quantity)
 
-  const vatPrice = computed(() => Math.round((totalPrice.value * 16) / 100))
+      console.log(`Item ID: ${item.id}, Price: ${price}, Quantity: ${quantity}, Acc: ${acc}`)
+
+      if (isNaN(price) || isNaN(quantity)) {
+        console.error(`NaN detected for item ${item.id}: price=${price}, quantity=${quantity}`)
+        return acc
+      }
+
+      return acc + price * quantity
+    }, 0)
+
+    console.log('Final totalPrice:', result)
+    return result
+  })
+
+  const vatPrice = computed(() => {
+    console.log('Calculating vatPrice...')
+    const total = Number(totalPrice.value)
+    if (isNaN(total)) {
+      console.error('totalPrice is NaN, cannot calculate vatPrice.')
+      return 0 // или другое значение по умолчанию
+    }
+    return Math.round((total * 16) / 100)
+  })
 
   const addToCart = async (product: SneakersCart) => {
     const cartItem = cart.value.find((i) => i.id === product.id)
@@ -75,6 +100,24 @@ export const useCartStore = defineStore('cart', () => {
     cart.value = []
   }
 
+  const loadCartFromLocalStorage = () => {
+    const localCart = localStorage.getItem('cart')
+    if (localCart) {
+      const parsedCart = JSON.parse(localCart)
+
+      cart.value = parsedCart.map((item: SneakersCart) => ({
+        ...item,
+        price: Number(item.price), // Убедиться, что price - число
+        quantity: Number(item.quantity), // Убедиться, что quantity - число
+      }))
+    } else {
+      cart.value = []
+    }
+  }
+
+  // Вызываем при инициализации стора
+  loadCartFromLocalStorage()
+
   return {
     cart,
     totalPrice,
@@ -85,5 +128,6 @@ export const useCartStore = defineStore('cart', () => {
     clearCart,
     incQuantity,
     decQuantity,
+    loadCartFromLocalStorage,
   }
 })

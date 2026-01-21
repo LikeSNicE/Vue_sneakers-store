@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { api } from '@/services/api'
 import { getUserIdFromToken } from '@/services/api'
-import { useLoadingStore } from '@/stores/loadingStore'
+import { useLoadingStore } from '@/stores/loading-store'
 import ProfileOrdersSkeleton from '@/components/ProfileOrdersSkeleton.vue'
 import NoOrders from '@/components/NoOrders.vue'
 import CardWideList from './CardWideList.vue'

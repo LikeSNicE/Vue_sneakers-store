@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGoodsStore } from '@/stores/goodsStore'
+import { useGoodsStore } from '@/stores/goods-store'
 
 type PaginationProps = {
   currentPage: number | undefined

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDrawerStore } from '../stores/drawerStore'
+import { useDrawerStore } from '../stores/drawer-store'
 import TitleBaseSlot from './TitleBaseSlot.vue'
 import ButtonNavigation from './ButtonNavigation.vue'
 

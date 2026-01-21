@@ -3,7 +3,7 @@ import { onMounted } from 'vue'
 import BaseButton from './BaseButton.vue'
 
 import { useRoute } from 'vue-router'
-import { useGoodsStore } from '@/stores/goodsStore'
+import { useGoodsStore } from '@/stores/goods-store'
 import { BASE_URL } from '@/config/baseUrl'
 
 const route = useRoute()

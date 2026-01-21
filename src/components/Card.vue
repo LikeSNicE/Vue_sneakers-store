@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BASE_URL } from '@/config/baseUrl'
 import { type SneakersCart } from '@/types/Sneakers'
-import { useGoodsStore } from '@/stores/goodsStore'
+import { useGoodsStore } from '@/stores/goods-store'
 import { RouterLink } from 'vue-router'
 import { authState } from '@/services/auth'
 

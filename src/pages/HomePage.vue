@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { watch, onMounted } from 'vue'
+import { watch, onMounted, onUnmounted } from 'vue'
 import { debounce } from 'lodash'
 import CardList from '../components/CardList.vue'
-import { useLoadingStore } from '@/stores/loadingStore'
+import { useLoadingStore } from '@/stores/loading-store'
 import CardListSkeleton from '@/components/CardListSkeleton.vue'
 import TitleBaseSlot from '@/components/TitleBaseSlot.vue'
-import { useCartStore } from '@/stores/CartStore'
-import { useFilterStore } from '@/stores/filtersStore'
-import { useGoodsStore } from '@/stores/goodsStore'
+import { useCartStore } from '@/stores/cart-store'
+import { useFilterStore } from '@/stores/filters-store'
+import { useGoodsStore } from '@/stores/goods-store'
 import Pagination from '@/components/Pagination.vue'
 import NotFoundItem from '@/components/NotFoundItem.vue'
 
@@ -26,12 +26,19 @@ const onChangeSearchInput = debounce((event: Event) => {
 }, 300)
 
 onMounted(async () => {
-  // Для корзина чтобы при перезагрузке не терялось состояние
+  /* // Для корзина чтобы при перезагрузке не терялось состояние
   const localCart = localStorage.getItem('cart')
   // Если данные есть то присваиваем в cartStore.cart
-  cartStore.cart = localCart ? JSON.parse(localCart) : []
+  cartStore.cart = localCart ? JSON.parse(localCart) : [] */
+
+  cartStore.loadCartFromLocalStorage()
 
   await goodsStore.fetchItems()
+})
+
+// Очищаем поисковый запрос при уходе со страницы
+onUnmounted(() => {
+  filterStore.filters.searchQuery = ''
 })
 
 watch(
